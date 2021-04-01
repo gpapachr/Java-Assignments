@@ -1,3 +1,3 @@
 # Java-Assignments
 
-Here are my projects developed as assignments of AUEB's "Java Programming" course. The discription of each one is included as a pdf file but only in greek. Exersices are simple implementations of known methods as factorials or combinations just for better understanding of object-oriented programming. Projects are larger-scale implementations of completed application without graphics.
+Here are my projects developed as assignments of AUEB's "Introduction to Java Programming" course. The description of each one is included as a pdf file but only in greek. Exersices are simple implementations of known methods like factorials or combinations just for better understanding of object-oriented programming. Projects are larger-scale implementations of completed applications without graphic elements.
