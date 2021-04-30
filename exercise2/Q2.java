@@ -21,7 +21,7 @@ public class Q2 extends Test {
         t = q;
         t.show();
 
-        q = t;
+        q = (Q2)t;
         q.show();
     }
  }
