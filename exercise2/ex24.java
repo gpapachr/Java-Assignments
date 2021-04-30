@@ -13,21 +13,22 @@ class Rectangle {
     private Point origin;
 
     public Rectangle() {
-		________________________
+		this.origin = new Point(0, 0);
     }
 	
     public Rectangle(Point p) {
-		________________________
+		this.origin = p;
     }
 	
     public Rectangle(int w, int h) {
-		________________________
+		this.width = w;
+		this.height= h;
     }
 	
     public Rectangle(Point p, int w, int h) {
-		________________________
-		________________________
-		________________________
+		this.origin = p;
+		this.width = w;
+		this.height = h;
     }
 
     // a method for computing the area of the rectangle
@@ -38,10 +39,15 @@ class Rectangle {
 
 public class ex24 {
 	public static void main (String args[]){
-		Rectangle r1 = ________________________
-		Rectangle r2 = ________________________
-		Rectangle r3 = ________________________
-		Rectangle r4 = ________________________
+		Rectangle r1 = new Rectangle();
+		Rectangle r2 = new Rectangle(new Point(4,5));
+		Rectangle r3 = new Rectangle(4, 5);
+		Rectangle r4 = new Rectangle(new Point(4,5), 4, 5);
+
+		System.out.println("R1: " + r1.area());
+		System.out.println("R2: " + r2.area());
+		System.out.println("R3: " + r3.area());
+		System.out.println("R4: " + r4.area());
 	}
 	
 }
