@@ -13,7 +13,7 @@ class Rectangle {
     private Point origin;
 
     public Rectangle() {
-		this.origin = new Point(0, 0);
+		origin = new Point(0,0);
     }
 	
     public Rectangle(Point p) {
@@ -21,8 +21,7 @@ class Rectangle {
     }
 	
     public Rectangle(int w, int h) {
-		this.width = w;
-		this.height= h;
+		this(new Point(0,0), w, h);
     }
 	
     public Rectangle(Point p, int w, int h) {
@@ -41,15 +40,14 @@ public class ex24 {
 	public static void main (String args[]){
 		Rectangle r1 = new Rectangle();
 		Rectangle r2 = new Rectangle(new Point(4,5));
-		Rectangle r3 = new Rectangle(4, 5);
+		Rectangle r3 = new Rectangle(4,5);
 		Rectangle r4 = new Rectangle(new Point(4,5), 4, 5);
-
+		
 		System.out.println("R1: " + r1.area());
 		System.out.println("R2: " + r2.area());
 		System.out.println("R3: " + r3.area());
 		System.out.println("R4: " + r4.area());
 	}
-	
 }
 
 

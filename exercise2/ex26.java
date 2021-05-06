@@ -41,13 +41,13 @@ public class ex26 {
   }
   public static void main(String[] args) {
 	  
-    _________________________________
+    Shape[] arr = new Shape[10];
      
-    for _____________________________
-       ______________________________
+    for (int i=0; i<arr.length; i++){
+      arr[i] = randShape();}
      
-    for _____________________________
-       ______________________________
+    for (int i=0; i<arr.length; i++){
+      arr[i].draw();}
   }
 } 
 

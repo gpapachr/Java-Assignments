@@ -1,7 +1,7 @@
 abstract class Animal {
 
       String name;
-      int animals = 0;
+      static int animals = 0;
 
       public Animal(String n) {
             name = n;
@@ -10,7 +10,7 @@ abstract class Animal {
 
       public abstract void speak();
 
-      public int numberOfAnimals() {
+      public static int numberOfAnimals() {
             return animals;
       }
 
@@ -20,8 +20,22 @@ abstract class Animal {
 
 class Dog extends Animal {
 
+      public Dog(String n) {
+            super(n);
+            dogs++;
+      }
+
       String sound = "woof";
-      int dogs = 0;
+      static int dogs = 0;
+      
+      @Override
+      public void speak() {
+            System.out.println(name + ": "+ sound);            
+      }
+
+      public static int numberOfDogs() {
+            return dogs;
+      }
 
        
 
@@ -31,8 +45,20 @@ class Dog extends Animal {
 
 class Cat extends Animal {
 
+      public Cat(String n) {
+            super(n);
+            cats++;
+      }
       String sound = "miaou";
-      int cats = 0;
+      static int cats = 0;
+
+      @Override
+      public void speak() {
+            System.out.println(name + ": "+ sound);
+      }
+      public static int numberOfCats() {
+            return cats;
+      }
 
      
 	  
