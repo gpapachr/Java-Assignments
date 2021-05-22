@@ -1,6 +1,7 @@
 public class Transaction {
     private final Employee employee;
-    private final double costToPay;
+    protected final double costToPay;
+    private final String type = "default";
 
     Transaction(Employee employee, double costToPay){
         this.employee = employee;
@@ -18,5 +19,9 @@ public class Transaction {
     @Override
     public String toString(){
         return Double.toString(costToPay);
+    }
+
+    public String getType(){
+        return type;
     }
 }

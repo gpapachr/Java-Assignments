@@ -1,4 +1,5 @@
 import javax.management.InvalidAttributeValueException;
+import java.awt.*;
 import java.util.*;
 
 public class mainApp {
@@ -87,7 +88,7 @@ public class mainApp {
 
         employeesTransactions = new HashMap<>();
         for (Employee e: employees){
-            Transaction t = new Transaction(e, 50.0);
+            Transaction t = new PrePaymentTransaction(e, 50.0);
             employeesTransactions.put(e, t);
         }
     }
@@ -251,22 +252,12 @@ public class mainApp {
         int response = -1;
         do{
             try{
-                System.out.println("Choose Employee: (Numbers only)\n");
+                System.out.println("Choose Employee: (Numbers only, type -2 to add a new Employee)\n");
                 response = sc.nextInt();
-            }
-            catch(Exception e){
-                System.out.println("Invalid Input");
-            }
-        }while(response == -1);
 
-        Employee emp = employees.get(response);
-
-        listToString(expenseTypes);
-        response = -1;
-        do{
-            try{
-                System.out.println("Choose Expense Type: (Numbers only, type -2 to add a new expense type first)\n");
-                response = sc.nextInt();
+                if(response >= employees.size()){
+                    throw new InvalidAttributeValueException();
+                }
             }
             catch(Exception e){
                 System.out.println("Invalid Input");
@@ -274,53 +265,176 @@ public class mainApp {
         }while(response == -1);
 
         if(response == -2){
-            function1();
+            function2();
         }
+        else{
+            Employee emp = employees.get(response);
 
-        ExpenseType et = expenseTypes.get(response);
+            listToString(expenseTypes);
+            response = -1;
+            do{
+                try{
+                    System.out.println("Choose Expense Type: (Numbers only, type -2 to add a new expense type)\n");
+                    response = sc.nextInt();
 
-        double value = -1;
+                    if(response >= expenseTypes.size()){
+                        throw new InvalidAttributeValueException();
+                    }
+                }
+                catch(Exception e){
+                    System.out.println("Invalid Input");
+                }
+            }while(response == -1);
 
-        do{
-            try{
-                System.out.println("Insert expense value: ");
-                value = sc.nextDouble();
+            if(response == -2){
+                function1();
             }
-            catch(Exception e){
-                System.out.println("Invalid Input");
-            }
-        }while(value == -1);
 
-        String reasoning = null;
+            ExpenseType et = expenseTypes.get(response);
 
-        do{
-            try{
-                System.out.println("Insert expense reasoning: ");
-                reasoning = sc.next();
-            }
-            catch(Exception e){
-                System.out.println("Invalid Input");
-            }
-        }while(reasoning == null);
+            double value = -1;
 
-        toAdd = new EmployeeExpense(emp, et, value, reasoning);
-        employeesExpenses.put(emp, toAdd);
+            do{
+                try{
+                    System.out.println("Insert expense value: ");
+                    value = sc.nextDouble();
+                }
+                catch(Exception e){
+                    System.out.println("Invalid Input");
+                }
+            }while(value == -1);
+
+            String reasoning = null;
+
+            do{
+                try{
+                    System.out.println("Insert expense reasoning: ");
+                    reasoning = sc.next();
+                }
+                catch(Exception e){
+                    System.out.println("Invalid Input");
+                }
+            }while(reasoning == null);
+
+            toAdd = new EmployeeExpense(emp, et, value, reasoning);
+            employeesExpenses.put(emp, toAdd);
+        }
     }
 
     public static void function4(){
         System.out.println("New payment in advance");
+        Transaction toAdd;
+
+        listToString(employees);
+
+        int response = -1;
+        do{
+            try{
+                System.out.println("Choose Employee: (Numbers only, insert -2 to add new employee)\n");
+                response = sc.nextInt();
+
+                if(response >= employees.size()){
+                    throw new InvalidAttributeValueException();
+                }
+            }
+            catch(Exception e){
+                System.out.println("Invalid Input");
+            }
+        }while(response == -1);
+
+        if(response == -2){
+            function2();
+        }
+        else{
+            Employee emp = employees.get(response);
+
+            double amount = -1;
+
+            do{
+                try{
+                    System.out.println("Insert payment's amount: \n");
+                    amount = sc.nextDouble();
+                }
+                catch(Exception e){
+                    System.out.println("Invalid Input");
+                }
+            }while(amount == -1);
+
+            toAdd = new Transaction(emp, amount);
+            employeesTransactions.put(emp, toAdd);
+        }
+    }
+
+    public static void function5(){
+        System.out.println("Employees' Expenses");
+        mapToString(employeesExpenses);
+    }
+
+    public static void function6(){
+        System.out.println("Employee Clearing Payment\n");
+        listToString(employees);
+        int response = -1;
+        do{
+            try{
+                System.out.println("Please select an employee (Numbers only): \n");
+                response = sc.nextInt();
+
+                if(response >= employees.size()){
+                    throw new InvalidAttributeValueException();
+                }
+            }
+            catch(Exception e){
+                System.out.println("Invalid Input");
+            }
+        }while(response == -1);
+
+        Employee emp = employees.get(response);
+        employeeClearing(emp);
+    }
+
+    public static void function7(){
+        System.out.println("Employee's transactions\n");
+        listToString(employees);
+
+        int response = -1;
+
+        do{
+            try{
+                System.out.println("Insert Employee's number: \n");
+                response = sc.nextInt();
+
+                if(response >= employees.size()){
+                    throw new InvalidAttributeValueException();
+                }
+            }
+            catch(Exception e){
+                System.out.println("Invalid Input");
+            }
+        }while(response==-1);
+
+        Employee emp = employees.get(response);
+
+        printEmployeeTransactions(emp);
 
     }
 
-    public static void function5(){}
+    public static void function8(){
+        for(Employee e: employees){
+            employeeClearing(e);
+        }
+    }
 
-    public static void function6(){}
-
-    public static void function7(){}
-
-    public static void function8(){}
-
-    public static void function9(){}
+    public static void function9(){
+        System.out.println("Final Monthly Payments\n");
+        double companysTotal = 0;
+        double employeesTotal = 0;
+        for(Employee e: employees){
+            employeesTotal = countEmployeePayment(e);
+            companysTotal += employeesTotal;
+            System.out.println(e.getLastname() + "\t" + e.getFirstname() + "\t: " + employeesTotal);
+        }
+        System.out.println("\nCompany's total: " + companysTotal);
+    }
 
     public static void listToString(ArrayList a){
         int i = 0;
@@ -337,5 +451,67 @@ public class mainApp {
             String mapString = i++ + e.toString() + ". " + ":\t" + h.get(e).toString();
             System.out.println(mapString);
         }
+    }
+
+    public static void employeeClearing(Employee emp){
+        for(Employee e: employeesTransactions.keySet()){ // remove previous clearing transactions
+            if(e.getLastname().equals(emp.getLastname()) && e.getFirstname().equals(emp.getFirstname())){
+                if(employeesTransactions.get(e).getType().equals("clearing")){
+                    employeesTransactions.remove(e);
+                }
+            }
+        }
+        ArrayList<EmployeeExpense> tempList = new ArrayList<>();
+        for(Employee e: employeesExpenses.keySet()){  // find all expenses of the current employee
+            if(e.getLastname().equals(emp.getLastname()) && e.getFirstname().equals(emp.getFirstname())){
+                tempList.add(employeesExpenses.get(e));
+            }
+        }
+
+        for(Employee e: employeesExpenses.keySet()){  // clear all expenses of the current employee
+            if(e.getLastname().equals(emp.getLastname()) && e.getFirstname().equals(emp.getFirstname())){
+                employeesExpenses.remove(e);
+            }
+        }
+
+        for(ExpenseType et: expenseTypes){ // count subtotal for each expense type
+            double subtotal = 0;
+            for(EmployeeExpense ee: tempList){
+                if(ee.getExpenseType().getDescription().equals(et.getDescription())){
+                    subtotal += ee.getValue();
+                }
+            }
+            Transaction t = new ClearingTransaction(emp, subtotal, et);
+            employeesTransactions.put(emp, t);
+
+            if(et.getMaxMonthlyValue() != 0 && subtotal > et.getMaxMonthlyValue()){
+                Transaction diff = new Transaction(emp, et.getMaxMonthlyValue() - subtotal);
+                employeesTransactions.put(emp, diff);
+            }
+        }
+    }
+
+    public static void printEmployeeTransactions(Employee emp){
+        System.out.println(emp.toString() + "\t transactions \n");
+        for(Employee e: employeesTransactions.keySet()){
+            if(e.getLastname().equals(emp.getLastname()) && e.getFirstname().equals(emp.getFirstname())){
+                System.out.println(e.toString() + "\t" + employeesTransactions.get(e).toString() + "\n");
+            }
+        }
+    }
+
+    public static double countEmployeePayment(Employee emp){
+        double total = 0;
+        for(Employee e: employeesTransactions.keySet()){
+            if(e.getLastname().equals(emp.getLastname()) && e.getFirstname().equals(emp.getFirstname())){
+                if(employeesTransactions.get(e).getType().equals("clearing")) {
+                    total += employeesTransactions.get(e).getCostToPay();
+                }
+                else{
+                    total -= employeesTransactions.get(e).getCostToPay();
+                }
+            }
+        }
+        return total;
     }
 }
