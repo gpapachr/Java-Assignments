@@ -26,4 +26,9 @@ public class EmployeeExpense {
     public String getReasoning() {
         return reasoning;
     }
+
+    @Override
+    public String toString(){
+        return expenseType.getDescription() + "\t" + Double.toString(value);
+    }
 }

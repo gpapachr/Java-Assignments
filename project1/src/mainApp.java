@@ -431,8 +431,18 @@ public class mainApp {
         for(Employee e: employees){
             employeesTotal = countEmployeePayment(e);
             companysTotal += employeesTotal;
-            System.out.println(e.getLastname() + "\t" + e.getFirstname() + "\t: " + employeesTotal);
+
+            if(employeesTotal < 0){
+                employeesTotal = 0;
+            }
+
+            System.out.println(e.getLastname() + "\t" + e.getFirstname() + ":\t" + employeesTotal);
         }
+
+        if(companysTotal < 0){
+            companysTotal = 0;
+        }
+
         System.out.println("\nCompany's total: " + companysTotal);
     }
 
@@ -448,7 +458,7 @@ public class mainApp {
     public static void mapToString(HashMap h){
         int i = 0;
         for (Object e : h.keySet()){
-            String mapString = i++ + e.toString() + ". " + ":\t" + h.get(e).toString();
+            String mapString = i++ + ". " + e.toString() +  ": \t" + h.get(e).toString();
             System.out.println(mapString);
         }
     }

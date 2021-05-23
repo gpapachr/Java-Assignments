@@ -13,6 +13,6 @@ public class ClearingTransaction extends Transaction{
 
     @Override
     public String toString(){
-        return Double.toString(super.costToPay) + "\t" + expenseType.getDescription() + "\n";
+        return Double.toString(super.costToPay) + "\t" + expenseType.getDescription();
     }
 }

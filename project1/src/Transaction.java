@@ -3,7 +3,7 @@ public class Transaction {
     protected final double costToPay;
     private final String type = "default";
 
-    Transaction(Employee employee, double costToPay){
+    Transaction(Employee employee, double costToPay) {
         this.employee = employee;
         this.costToPay = costToPay;
     }
@@ -18,7 +18,7 @@ public class Transaction {
 
     @Override
     public String toString(){
-        return Double.toString(costToPay);
+        return Double.toString(costToPay) + "\t" + type;
     }
 
     public String getType(){

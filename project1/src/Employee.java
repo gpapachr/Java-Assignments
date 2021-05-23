@@ -25,6 +25,6 @@ public class Employee {
 
     @Override
     public String toString(){
-        return lastname + "\t" + firstname + "\t" + maxMonthlyPayment + "\n";
+        return lastname + "\t" + firstname;
     }
 }

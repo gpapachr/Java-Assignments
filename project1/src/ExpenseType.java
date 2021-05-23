@@ -1,15 +1,24 @@
+import java.util.concurrent.atomic.AtomicLong;
+
 public class ExpenseType {
-    private static int id = 0;
+    private String id;
     private final String description;
     private final double maxMonthlyValue;
 
+    private static AtomicLong idCounter = new AtomicLong();
+
+    protected static String createID()
+    {
+        return String.valueOf(idCounter.getAndIncrement());
+    }
+
     ExpenseType(String description, double maxMonthlyValue){
-        id++;
+        this.id = createID();
         this.description = description;
         this.maxMonthlyValue = maxMonthlyValue;
     }
 
-    public static int getId() {
+    public String getId() {
         return id;
     }
 
@@ -27,6 +36,6 @@ public class ExpenseType {
 
     @Override
     public String toString(){
-        return id + "\t" + description + "\t" + maxMonthlyValue + "\n";
+        return id + "\t" + description + "\t" + maxMonthlyValue;
     }
 }
