@@ -1,3 +1,8 @@
+/*
+    @authors:   Ioannis Papachristou - 3180150
+                Ioannis Mavridis - 3180106
+ */
+
 import javax.management.InvalidAttributeValueException;
 import java.awt.*;
 import java.util.*;
