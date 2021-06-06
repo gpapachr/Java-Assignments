@@ -529,23 +529,4 @@ public class mainApp {
         }
         return total;
     }
-
-    private class FileReader{
-        public static ReadFile(int i){
-
-            BufferedReader reader = null;
-            String line;
-
-            switch(i){
-                case 0:
-                    break;
-                case 1:
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    break;
-            }
-        }
-    }
 }
