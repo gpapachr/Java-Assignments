@@ -7,6 +7,7 @@ public class ClearingTransaction extends Transaction{
         this.expenseType = expenseType;
     }
 
+    @Override
     public ExpenseType getExpenseType() {
         return expenseType;
     }

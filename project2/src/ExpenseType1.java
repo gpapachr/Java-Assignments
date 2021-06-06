@@ -9,6 +9,12 @@ public class ExpenseType1 extends ExpenseType{
         this.unit = unit;
     }
 
+    ExpenseType1(String code, String description, double maxMonthlyValue, double costPerUnit, String unit){
+        super(code, description, maxMonthlyValue);
+        this.costPerUnit = costPerUnit;
+        this.unit = unit;
+    }
+
     public String getUnit() {
         return unit;
     }
@@ -16,5 +22,10 @@ public class ExpenseType1 extends ExpenseType{
     @Override
     public double calculateCost(double value){
         return costPerUnit*value;
+    }
+
+    @Override
+    public String getType(){
+        return "1";
     }
 }

@@ -18,6 +18,12 @@ public class ExpenseType {
         this.maxMonthlyValue = maxMonthlyValue;
     }
 
+    ExpenseType(String code, String descr, double maxMonthlyValue){
+        this.id = code;
+        this.description = descr;
+        this.maxMonthlyValue = maxMonthlyValue;
+    }
+
     public String getId() {
         return id;
     }
@@ -32,6 +38,10 @@ public class ExpenseType {
 
     public double calculateCost(double value){
         return -1;      // it will be overridden; -1 indicates that an error has occurred
+    }
+
+    public String getType(){
+        return "0";
     }
 
     @Override

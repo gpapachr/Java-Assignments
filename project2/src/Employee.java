@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
 public class Employee {
+    private String id;
     private final String lastname;
     private final String firstname;
     private final double maxMonthlyPayment;
@@ -9,6 +10,17 @@ public class Employee {
         this.lastname = lastname;
         this.firstname = firstname;
         this.maxMonthlyPayment = maxMonthlyPayment;
+    }
+
+    Employee(String id, String lastname, String firstname, double maxMonthlyPayment){
+        this.id = id;
+        this.lastname = lastname;
+        this.firstname = firstname;
+        this.maxMonthlyPayment = maxMonthlyPayment;
+    }
+
+    public String getId(){
+        return id;
     }
 
     public String getLastname() {

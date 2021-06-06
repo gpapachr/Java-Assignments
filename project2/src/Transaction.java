@@ -24,4 +24,8 @@ public class Transaction {
     public String getType(){
         return type;
     }
+
+    public ExpenseType getExpenseType() {
+        return null;
+    }
 }
