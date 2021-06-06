@@ -62,3 +62,8 @@ out/
 
 ### Local Configuration ###
 .env
+
+### Zip Files ###
+*.zip
+*.rar
+*.7z
