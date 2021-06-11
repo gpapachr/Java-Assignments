@@ -55,7 +55,7 @@ public class LoadExport {
         BufferedReader br = null;
         FileReader fr = null;
         ArrayList<ExpenseType> et = new ArrayList<>();
-        String checkpoint = null, sCurrentLine, type = null, code = null, descr = null;
+        String checkpoint = null, currentLine, type = null, code = null, descr = null;
         boolean hasType = false, hasCode = false, hasDescr = false;
         double maxMonValue = 0.0;
 
@@ -63,59 +63,59 @@ public class LoadExport {
             fr = new FileReader(path);
             br = new BufferedReader(fr);
         } catch (Exception ioe) {
-            System.out.println("!!!PROBLEM ON FILE READING!!!");
+            System.out.println("!!!PROBLEM ON EXPENSE_TYPES READING!!!");
         }
 
         try {
-            while ((sCurrentLine = br.readLine()) != null) {
-                skipEmptyLines(sCurrentLine, br);
-                if (sCurrentLine.trim().equalsIgnoreCase("EXPENSE_TYPE_LIST")) {
-                    sCurrentLine = br.readLine();
+            while ((currentLine = br.readLine()) != null) {
+                skipEmptyLines(currentLine, br);
+                if (currentLine.trim().equalsIgnoreCase("EXPENSE_TYPE_LIST")) {
+                    currentLine = br.readLine();
 
-                    skipEmptyLines(sCurrentLine, br);
-                    if (sCurrentLine.trim().equals("{")) {
-                        while (!sCurrentLine.trim().equals("}") && sCurrentLine != null) {
-                            sCurrentLine = br.readLine();
-                            skipEmptyLines(sCurrentLine, br);
-                            if (sCurrentLine.trim().equalsIgnoreCase("EXPENSE_TYPE")) {
-                                sCurrentLine = br.readLine();
-                                skipEmptyLines(sCurrentLine, br);
-                                if (sCurrentLine.equals("{")) {
+                    skipEmptyLines(currentLine, br);
+                    if (currentLine.trim().equals("{")) {
+                        while (!currentLine.trim().equals("}") && currentLine != null) {
+                            currentLine = br.readLine();
+                            skipEmptyLines(currentLine, br);
+                            if (currentLine.trim().equalsIgnoreCase("EXPENSE_TYPE")) {
+                                currentLine = br.readLine();
+                                skipEmptyLines(currentLine, br);
+                                if (currentLine.equals("{")) {
                                     br.mark(10000);
 
-                                    while (!sCurrentLine.equals("}") && sCurrentLine != null) {
-                                        checkpoint = sCurrentLine = br.readLine();
-                                        if (sCurrentLine.matches("(?i)\\s*code\\s*(\\S+\\s*)*")) {
+                                    while (!currentLine.equals("}") && currentLine != null) {
+                                        checkpoint = currentLine = br.readLine();
+                                        if (currentLine.matches("(?i)\\s*code\\s*(\\S+\\s*)*")) {
                                             hasCode = true;
-                                            code = sCurrentLine.trim().substring("CODE".length()).trim();
-                                        } else if (sCurrentLine.matches("(?i)\\s*descr\\s*(\\S+\\s*)*")) {
+                                            code = currentLine.trim().substring("CODE".length()).trim();
+                                        } else if (currentLine.matches("(?i)\\s*descr\\s*(\\S+\\s*)*")) {
                                             hasDescr = true;
-                                            descr = sCurrentLine.trim().substring("EXPENSE_TYPE_DESCR".length()).trim();
-                                        } else if (sCurrentLine.matches("(?i)\\s*type\\s*\\S+\\s*")) {
+                                            descr = currentLine.trim().substring("EXPENSE_TYPE_DESCR".length()).trim();
+                                        } else if (currentLine.matches("(?i)\\s*type\\s*\\S+\\s*")) {
                                             hasType = true;
-                                            type = sCurrentLine.trim().substring(5).trim();
+                                            type = currentLine.trim().substring(5).trim();
                                         }
                                     }
                                 }
                                 if (hasCode && hasDescr && hasType) {
                                     br.reset();
-                                    sCurrentLine = br.readLine();
+                                    currentLine = br.readLine();
                                     if (type.trim().equalsIgnoreCase("1")) {
                                         double costPerUnit = 0;
                                         String unit = null;
-                                        while (!sCurrentLine.trim().equals("}")) {
-                                            if (sCurrentLine.matches("(?i)\\s*cost_per_unit\\s*(\\S+\\s*)*")) {
-                                                costPerUnit = Double.parseDouble(sCurrentLine.trim().substring("cost_per_unit".length()).trim());
-                                            } else if (sCurrentLine.matches("(?i)\\s*unit\\s*(\\S+\\s*)*")) {
-                                                unit = sCurrentLine.trim().substring("UNIT".length());
+                                        while (!currentLine.trim().equals("}")) {
+                                            if (currentLine.matches("(?i)\\s*cost_per_unit\\s*(\\S+\\s*)*")) {
+                                                costPerUnit = Double.parseDouble(currentLine.trim().substring("cost_per_unit".length()).trim());
+                                            } else if (currentLine.matches("(?i)\\s*unit\\s*(\\S+\\s*)*")) {
+                                                unit = currentLine.trim().substring("UNIT".length());
                                             }
-                                            sCurrentLine = br.readLine();
+                                            currentLine = br.readLine();
                                         }
                                         et.add(new ExpenseType1(code, descr, maxMonValue, costPerUnit, unit));
                                     } else if (type.trim().equalsIgnoreCase("2")) {
                                         double percentage = 0.0;
-                                        if (sCurrentLine.matches("(?i)\\s*percentage\\s*(\\S+\\s*)*")) {
-                                            percentage = Double.parseDouble(sCurrentLine.trim().substring("PERCENTAGE".length()).trim());
+                                        if (currentLine.matches("(?i)\\s*percentage\\s*(\\S+\\s*)*")) {
+                                            percentage = Double.parseDouble(currentLine.trim().substring("PERCENTAGE".length()).trim());
                                         }
                                         et.add(new ExpenseType2(code, descr, maxMonValue, percentage));
                                     }
@@ -145,7 +145,7 @@ public class LoadExport {
             fr = new FileReader(empListPath);
             br = new BufferedReader(fr);
         } catch (Exception ioe) {
-            System.out.println("!!!PROBLEM ON FILE READING!!!");
+            System.out.println("!!!PROBLEM ON EMPLOYEES READING!!!");
         }
 
         try {
@@ -167,39 +167,34 @@ public class LoadExport {
 
                                 skipEmptyLines(currentLine, br);
 
-                                if (currentLine.equals("{")){
-                                    while (!currentLine.equals("}") && currentLine != null){
+                                if (currentLine.equals("{")) {
+                                    while (!currentLine.equals("}") && currentLine != null) {
                                         checkpoint = currentLine = br.readLine();
-                                        if (currentLine.matches("(?i)\\s*code\\s*(\\S+\\s*)*")){
+                                        if (currentLine.matches("(?i)\\s*code\\s*(\\S+\\s*)*")) {
                                             hasCode = true;
                                             code = currentLine.trim().substring("CODE".length()).trim();
-                                        }
-                                        else if(currentLine.matches("(?i)\\s*firstname\\s*(\\S+\\s*)*")){
+                                        } else if (currentLine.matches("(?i)\\s*firstname\\s*(\\S+\\s*)*")) {
                                             hasName = true;
                                             firstname = currentLine.trim().substring("FIRSTNAME".length()).trim();
-                                        }
-                                        else if(currentLine.matches("(?i)\\s*lastname\\s*(\\S+\\s*)*")) {
+                                        } else if (currentLine.matches("(?i)\\s*lastname\\s*(\\S+\\s*)*")) {
                                             hasSurname = true;
                                             surname = currentLine.trim().substring("LASTNAME".length()).trim();
-                                        }
-                                        else if(currentLine.matches("(?i)\\s*max_monthly_val\\s*(\\S+\\s*)*")){
+                                        } else if (currentLine.matches("(?i)\\s*max_monthly_val\\s*(\\S+\\s*)*")) {
                                             hasMaxMonValue = true;
                                             max_mon_value = currentLine.trim().substring("LASTNAME".length()).trim();
                                         }
                                     }
                                 }
 
-                                if (hasCode && hasName && hasSurname){
+                                if (hasCode && hasName && hasSurname) {
                                     Double mmv;
-                                    if(hasMaxMonValue){
+                                    if (hasMaxMonValue) {
                                         mmv = Double.parseDouble(max_mon_value);
-                                    }
-                                    else{
+                                    } else {
                                         mmv = 200.0;
                                     }
                                     e.add(new Employee(code, surname, firstname, mmv));
-                                }
-                                else{
+                                } else {
                                     System.out.println("File in line: ' " + checkpoint + " ' was skipped during loading due to insufficient data...");
                                 }
                             }
@@ -215,7 +210,97 @@ public class LoadExport {
     }
 
     private static HashMap<Employee, EmployeeExpense> loadEmpExpenses(String empExpPath) {
-        //TODO implement loadEmpExpenses
+        BufferedReader br = null;
+        FileReader fr = null;
+        HashMap<Employee, EmployeeExpense> ee = new HashMap<>();
+        String checkpoint = null, currentLine = null, emp_code = null, exp_type = null, exp_code = null, val = null;
+        boolean hasEmpCode = false, hasExpType = false, hasExpCode = false, hasVal = false;
+
+        try {
+            fr = new FileReader(empExpPath);
+            br = new BufferedReader(fr);
+        } catch (Exception ioe) {
+            System.out.println("!!!PROBLEM ON EMPLOYEE_EXPENSES READING!!!");
+        }
+
+        try {
+            while ((currentLine = br.readLine()) != null) {
+                skipEmptyLines(currentLine, br);
+                if (currentLine.trim().equalsIgnoreCase("EXPENSE_LIST")) {
+                    currentLine = br.readLine();
+                    skipEmptyLines(currentLine, br);
+                    if (currentLine.trim().equals("{")) {
+                        while (!currentLine.trim().equals("}") && currentLine != null) {
+                            currentLine = br.readLine();
+                            skipEmptyLines(currentLine, br);
+                            if (currentLine.trim().equalsIgnoreCase("EXPENSE")) {
+                                currentLine = br.readLine();
+                                skipEmptyLines(currentLine, br);
+                                if (currentLine.equals("{")) {
+                                    while (!currentLine.equals("}") && currentLine != null) {
+                                        checkpoint = currentLine = br.readLine();
+                                        if (currentLine.matches("(?i)\\s*employee_code\\s*(\\S+\\s*)*")) {
+                                            hasEmpCode = true;
+                                            emp_code = currentLine.trim().substring("EMPLOYEE_CODE".length()).trim();
+                                        } else if (currentLine.matches("(?i)\\s*expense_type\\s*(\\S+\\s*)*")) {
+                                            hasExpType = true;
+                                            exp_type = currentLine.trim().substring("EXPENSE_TYPE".length()).trim();
+                                        } else if (currentLine.matches("(?i)\\s*expense_code\\s*(\\S+\\s*)*")) {
+                                            hasExpCode = true;
+                                            exp_code = currentLine.trim().substring("EXPENSE_CODE".length()).trim();
+                                        } else if (currentLine.matches("(?i)\\s*val\\s*(\\S+\\s*)*")) {
+                                            hasVal = true;
+                                            val = currentLine.trim().substring("VAL".length()).trim();
+                                        }
+                                    }
+                                }
+                                if (hasEmpCode && hasExpType && hasExpCode && hasVal) {
+                                    Employee emp = searchForEmployee(emp_code);
+                                    ExpenseType et = searchForExpenseType(exp_type, exp_code);
+                                    Double value = Double.parseDouble(val);
+                                    if (emp != null && et != null) {
+                                        EmployeeExpense expense = new EmployeeExpense(emp, et, value, et.getDescription());
+                                        ee.put(emp, expense);
+                                    } else {
+                                        if (emp != null) {
+                                            System.out.println("File in line: ' " + checkpoint + " ' was skipped due to invalid Employee Code");
+                                        }
+                                        if (et != null) {
+                                            System.out.println("File in line: ' " + checkpoint + " ' was skipped due to invalid Expense Type");
+                                        }
+                                    }
+
+                                } else {
+                                    System.out.println("File in line: ' " + checkpoint + " ' was skipped during loading due to insufficient data...");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("!!!ERROR DURING EMPLOYEE_EXPENSES LOADING!!!");
+            ee = null;
+        }
+
+        return ee;
+    }
+
+    private static ExpenseType searchForExpenseType(String exp_type, String exp_code) {
+        for (ExpenseType et : expenseTypes) {
+            if (et.getType().equalsIgnoreCase(exp_type) && et.getId().equals(exp_code)) {
+                return et;
+            }
+        }
+        return null;
+    }
+
+    private static Employee searchForEmployee(String emp_code) {
+        for (Employee e : employees) {
+            if (e.getId().equals(emp_code)) {
+                return e;
+            }
+        }
         return null;
     }
 
