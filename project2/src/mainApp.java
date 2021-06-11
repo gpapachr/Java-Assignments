@@ -484,7 +484,25 @@ public class mainApp {
                 employeesTransactions.put(emp, diff);
             }
         }
+
+        double final_amount = 0.0;
+        for (Employee e : employeesTransactions.keySet()) {
+            if (e.getId().equals(emp.getId())) {
+                Transaction current = employeesTransactions.get(e);
+                if (current.getType().equalsIgnoreCase("DIFFERENCE")) {
+                    final_amount -= current.getCostToPay();
+                } else {
+                    final_amount += current.getCostToPay();
+                }
+            }
+        }
+        if (final_amount > emp.getMaxMonthlyPayment()){
+            final_amount = emp.getMaxMonthlyPayment();
+        }
+        Transaction clearing = new ClearingTransaction(emp, final_amount);
+        employeesTransactions.put(emp, clearing);
     }
+
 
     public static void printEmployeeTransactions(Employee emp) {
         System.out.println(emp.toString() + "\t transactions \n");
