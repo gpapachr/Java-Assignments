@@ -1,7 +1,7 @@
 public class Transaction {
     private final Employee employee;
     protected final double costToPay;
-    private final String type = "default";
+    private final String type = "DIFFERENCE";
 
     Transaction(Employee employee, double costToPay) {
         this.employee = employee;

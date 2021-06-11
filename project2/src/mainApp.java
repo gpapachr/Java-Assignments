@@ -348,7 +348,7 @@ public class mainApp {
                 }
             } while (amount == -1);
 
-            toAdd = new Transaction(emp, amount);
+            toAdd = new PrePaymentTransaction(emp, amount);
             employeesTransactions.put(emp, toAdd);
         }
     }
@@ -451,7 +451,7 @@ public class mainApp {
     public static void employeeClearing(Employee emp) {
         for (Employee e : employeesTransactions.keySet()) { // remove previous clearing transactions
             if (e.getLastname().equals(emp.getLastname()) && e.getFirstname().equals(emp.getFirstname())) {
-                if (employeesTransactions.get(e).getType().equals("clearing")) {
+                if (employeesTransactions.get(e).getType().equalsIgnoreCase("CLEARING")) {
                     employeesTransactions.remove(e);
                 }
             }
@@ -499,7 +499,7 @@ public class mainApp {
         double total = 0;
         for (Employee e : employeesTransactions.keySet()) {
             if (e.getLastname().equals(emp.getLastname()) && e.getFirstname().equals(emp.getFirstname())) {
-                if (employeesTransactions.get(e).getType().equals("clearing")) {
+                if (employeesTransactions.get(e).getType().equalsIgnoreCase("CLEARING")) {
                     total += employeesTransactions.get(e).getCostToPay();
                 } else {
                     total -= employeesTransactions.get(e).getCostToPay();

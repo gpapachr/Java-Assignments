@@ -1,6 +1,6 @@
 public class ClearingTransaction extends Transaction{
     private final ExpenseType expenseType;
-    private final String type = "clearing";
+    private final String type = "CLEARING";
 
     ClearingTransaction(Employee employee, double costToPay, ExpenseType expenseType){
         super(employee, costToPay);
