@@ -286,27 +286,16 @@ public class LoadExport {
         return ee;
     }
 
-    private static ExpenseType searchForExpenseType(String exp_type, String exp_code) {
-        for (ExpenseType et : expenseTypes) {
-            if (et.getType().equalsIgnoreCase(exp_type) && et.getId().equals(exp_code)) {
-                return et;
-            }
-        }
-        return null;
-    }
-
-    private static Employee searchForEmployee(String emp_code) {
-        for (Employee e : employees) {
-            if (e.getId().equals(emp_code)) {
-                return e;
-            }
-        }
-        return null;
-    }
-
     private static HashMap<Employee, Transaction> loadEmpTransactions(String empTrnPath) {
-        //TODO implement loadEmpTransactions
-        return null;
+        BufferedReader br = null;
+        FileReader fr = null;
+        HashMap<Employee, Transaction> et = new HashMap<>();
+        String checkpoint = null, currentLine = null, emp_code = null, exp_type = null, exp_code = null, val = null;
+        boolean hasEmpCode = false, hasExpType = false, hasExpCode = false, hasVal = false;
+        /*todo: different data demand for each trn type -  diff if
+
+         */
+        return et;
     }
 
     private static void ExportExpenses(HashMap<Employee, EmployeeExpense> e, String exp) {
@@ -365,5 +354,23 @@ public class LoadExport {
                 continue;
             }
         }
+    }
+
+    private static ExpenseType searchForExpenseType(String exp_type, String exp_code) {
+        for (ExpenseType et : expenseTypes) {
+            if (et.getType().equalsIgnoreCase(exp_type) && et.getId().equals(exp_code)) {
+                return et;
+            }
+        }
+        return null;
+    }
+
+    private static Employee searchForEmployee(String emp_code) {
+        for (Employee e : employees) {
+            if (e.getId().equals(emp_code)) {
+                return e;
+            }
+        }
+        return null;
     }
 }
