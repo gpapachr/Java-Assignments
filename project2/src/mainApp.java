@@ -15,7 +15,22 @@ public class mainApp {
     static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
-        listsInit();
+        //listsInit(); initialization method of part1
+
+        LoadExport.LoadData("seed/EXPENSE_TYPE_LIST.txt", "seed/EMPLOYEE_LIST.txt", "seed/EXPENSE_LIST.txt", "seed/TRN_LIST.txt");
+        expenseTypes = LoadExport.getExpenseTypes();
+        employees = LoadExport.getEmployees();
+        employeesExpenses = LoadExport.getEmployeesExpenses();
+        employeesTransactions = LoadExport.getEmployeesTransactions();
+
+        try{
+            if(expenseTypes.isEmpty() || employees.isEmpty()){
+                listsInit();
+            }
+        }catch(Exception e){
+            listsInit();
+        }
+
         boolean loop = true;
         while (loop) {
             printHomeMenu();
@@ -40,6 +55,7 @@ public class mainApp {
                 System.out.println("Invalid Input! Please insert a number 0-9");
             }
         }
+        LoadExport.ExportData(employeesExpenses, employeesTransactions);
         System.out.println("\nClosing program...\n");
     }
 
@@ -413,7 +429,7 @@ public class mainApp {
     public static void function9() {
         System.out.println("Final Monthly Payments\n");
         double companysTotal = 0;
-        double employeesTotal = 0;
+        double employeesTotal;
         for (Employee e : employees) {
             employeesTotal = countEmployeePayment(e);
             companysTotal += employeesTotal;

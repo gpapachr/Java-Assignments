@@ -2,12 +2,10 @@ import java.io.*;
 import java.util.*;
 
 public class LoadExport {
-    private static String[] TAGS = {"EXPENSE_TYPE_LIST", "EXPENSE_TYPE", "TYPE", "CODE", "DESCR", "EMPLOYEE_LIST", "EMPLOYEE", "SURNAME", "FIRSTNAME", "MAX_MONTHLY_VAL",
+    private static final String[] TAGS = {"EXPENSE_TYPE_LIST", "EXPENSE_TYPE", "TYPE", "CODE", "DESCR", "EMPLOYEE_LIST", "EMPLOYEE", "SURNAME", "FIRSTNAME", "MAX_MONTHLY_VAL",
             "EXPENSE_LIST", "EXPENSE", "EMPLOYEE_CODE", "EXPENSE_CODE", "VAL", "TRN_LIST", "TRN", "COST_PER_UNIT", "UNIT", "PERCENTAGE"};
 
-    private LoadExport() {
-
-    }
+    private static HashMap<String, String> greekTrnTypes;
 
     private static ArrayList<ExpenseType> expenseTypes;
     private static ArrayList<Employee> employees;
@@ -31,8 +29,8 @@ public class LoadExport {
     }
 
     public static void ExportData(HashMap<Employee, EmployeeExpense> e, HashMap<Employee, Transaction> t) {
-        String exp = System.getProperty("user.home") + "/Desktop" + "/EmployeesExpenses.txt";
-        String trn = System.getProperty("user.home") + "/Desktop" + "/EmployeesTransactions.txt";
+        String exp = "seed/EXPENSE_LIST.txt";
+        String trn = "seed/TRN_LIST.txt";
 
         try {
             ExportExpenses(e, exp);
@@ -42,7 +40,16 @@ public class LoadExport {
         }
     }
 
+    public static void Translate_Trn(){
+        greekTrnTypes = new HashMap<>();
+        greekTrnTypes.put("PROKATAVOLI", "PREPAYMENT");
+        greekTrnTypes.put("APOZIMIOSI", "CLEARING");
+        greekTrnTypes.put("DIAFORA", "DIFFERENCE");
+        greekTrnTypes.put("FINAL_APOZIMIOSI", "FINAL_CLEARING");
+    }
+
     public static void LoadData(String expTypePath, String empListPath, String empExpPath, String empTrnPath) {
+
         expenseTypes = loadExpenseTypes(expTypePath);
         employees = loadEmployees(empListPath);
         employeesExpenses = loadEmpExpenses(empExpPath);
@@ -53,7 +60,7 @@ public class LoadExport {
     public static ArrayList<ExpenseType> loadExpenseTypes(String path) {
 
         BufferedReader br = null;
-        FileReader fr = null;
+        FileReader fr;
         ArrayList<ExpenseType> et = new ArrayList<>();
         String checkpoint = null, currentLine, type = null, code = null, descr = null;
         boolean hasType = false, hasCode = false, hasDescr = false;
@@ -67,14 +74,16 @@ public class LoadExport {
         }
 
         try {
-            while ((currentLine = br.readLine()) != null) {
+            while (true) {
+                assert br != null;
+                if ((currentLine = br.readLine()) == null) break;
                 skipEmptyLines(currentLine, br);
                 if (currentLine.trim().equalsIgnoreCase("EXPENSE_TYPE_LIST")) {
                     currentLine = br.readLine();
 
                     skipEmptyLines(currentLine, br);
                     if (currentLine.trim().equals("{")) {
-                        while (!currentLine.trim().equals("}") && currentLine != null) {
+                        while (!currentLine.trim().equals("}")) {
                             currentLine = br.readLine();
                             skipEmptyLines(currentLine, br);
                             if (currentLine.trim().equalsIgnoreCase("EXPENSE_TYPE")) {
@@ -83,7 +92,7 @@ public class LoadExport {
                                 if (currentLine.equals("{")) {
                                     br.mark(10000);
 
-                                    while (!currentLine.equals("}") && currentLine != null) {
+                                    while (!currentLine.equals("}")) {
                                         checkpoint = currentLine = br.readLine();
                                         if (currentLine.matches("(?i)\\s*code\\s*(\\S+\\s*)*")) {
                                             hasCode = true;
@@ -136,9 +145,9 @@ public class LoadExport {
 
     private static ArrayList<Employee> loadEmployees(String empListPath) {
         BufferedReader br = null;
-        FileReader fr = null;
+        FileReader fr;
         ArrayList<Employee> e = new ArrayList<>();
-        String currentLine = null, checkpoint = null, code = null, firstname = null, surname = null, max_mon_value = null;
+        String currentLine, checkpoint = null, code = null, firstname = null, surname = null, max_mon_value = null;
         boolean hasCode = false, hasName = false, hasSurname = false, hasMaxMonValue = false;
 
         try {
@@ -149,7 +158,9 @@ public class LoadExport {
         }
 
         try {
-            while ((currentLine = br.readLine()) != null) {
+            while (true) {
+                assert br != null;
+                if ((currentLine = br.readLine()) == null) break;
                 skipEmptyLines(currentLine, br);
                 if (currentLine.trim().equalsIgnoreCase("EMPLOYEE_LIST")) {
                     currentLine = br.readLine();
@@ -157,7 +168,7 @@ public class LoadExport {
                     skipEmptyLines(currentLine, br);
 
                     if (currentLine.trim().equals("{")) {
-                        while (!currentLine.trim().equals("}") && currentLine != null) {
+                        while (!currentLine.trim().equals("}")) {
                             currentLine = br.readLine();
 
                             skipEmptyLines(currentLine, br);
@@ -168,7 +179,7 @@ public class LoadExport {
                                 skipEmptyLines(currentLine, br);
 
                                 if (currentLine.equals("{")) {
-                                    while (!currentLine.equals("}") && currentLine != null) {
+                                    while (!currentLine.equals("}")) {
                                         checkpoint = currentLine = br.readLine();
                                         if (currentLine.matches("(?i)\\s*code\\s*(\\S+\\s*)*")) {
                                             hasCode = true;
@@ -181,13 +192,13 @@ public class LoadExport {
                                             surname = currentLine.trim().substring("LASTNAME".length()).trim();
                                         } else if (currentLine.matches("(?i)\\s*max_monthly_val\\s*(\\S+\\s*)*")) {
                                             hasMaxMonValue = true;
-                                            max_mon_value = currentLine.trim().substring("LASTNAME".length()).trim();
+                                            max_mon_value = currentLine.trim().substring("MAX_MONTHLY_VAL".length()).trim();
                                         }
                                     }
                                 }
 
                                 if (hasCode && hasName && hasSurname) {
-                                    Double mmv;
+                                    double mmv;
                                     if (hasMaxMonValue) {
                                         mmv = Double.parseDouble(max_mon_value);
                                     } else {
@@ -211,9 +222,9 @@ public class LoadExport {
 
     private static HashMap<Employee, EmployeeExpense> loadEmpExpenses(String empExpPath) {
         BufferedReader br = null;
-        FileReader fr = null;
+        FileReader fr;
         HashMap<Employee, EmployeeExpense> ee = new HashMap<>();
-        String checkpoint = null, currentLine = null, emp_code = null, exp_type = null, exp_code = null, val = null;
+        String checkpoint = null, currentLine, emp_code = null, exp_type = null, exp_code = null, val = null;
         boolean hasEmpCode = false, hasExpType = false, hasExpCode = false, hasVal = false;
 
         try {
@@ -224,20 +235,22 @@ public class LoadExport {
         }
 
         try {
-            while ((currentLine = br.readLine()) != null) {
+            while (true) {
+                assert br != null;
+                if ((currentLine = br.readLine()) == null) break;
                 skipEmptyLines(currentLine, br);
                 if (currentLine.trim().equalsIgnoreCase("EXPENSE_LIST")) {
                     currentLine = br.readLine();
                     skipEmptyLines(currentLine, br);
                     if (currentLine.trim().equals("{")) {
-                        while (!currentLine.trim().equals("}") && currentLine != null) {
+                        while (!currentLine.trim().equals("}")) {
                             currentLine = br.readLine();
                             skipEmptyLines(currentLine, br);
                             if (currentLine.trim().equalsIgnoreCase("EXPENSE")) {
                                 currentLine = br.readLine();
                                 skipEmptyLines(currentLine, br);
                                 if (currentLine.equals("{")) {
-                                    while (!currentLine.equals("}") && currentLine != null) {
+                                    while (!currentLine.equals("}")) {
                                         checkpoint = currentLine = br.readLine();
                                         if (currentLine.matches("(?i)\\s*employee_code\\s*(\\S+\\s*)*")) {
                                             hasEmpCode = true;
@@ -257,7 +270,7 @@ public class LoadExport {
                                 if (hasEmpCode && hasExpType && hasExpCode && hasVal) {
                                     Employee emp = searchForEmployee(emp_code);
                                     ExpenseType et = searchForExpenseType(exp_type, exp_code);
-                                    Double value = Double.parseDouble(val);
+                                    double value = Double.parseDouble(val);
                                     if (emp != null && et != null) {
                                         EmployeeExpense expense = new EmployeeExpense(emp, et, value, et.getDescription());
                                         ee.put(emp, expense);
@@ -287,14 +300,98 @@ public class LoadExport {
     }
 
     private static HashMap<Employee, Transaction> loadEmpTransactions(String empTrnPath) {
-        BufferedReader br = null;
-        FileReader fr = null;
-        HashMap<Employee, Transaction> et = new HashMap<>();
-        String checkpoint = null, currentLine = null, emp_code = null, exp_type = null, exp_code = null, val = null;
-        boolean hasEmpCode = false, hasExpType = false, hasExpCode = false, hasVal = false;
-        /*todo: different data demand for each trn type -  diff if
 
-         */
+        Translate_Trn();
+        BufferedReader br = null;
+        FileReader fr;
+        HashMap<Employee, Transaction> et = new HashMap<>();
+        String type = null, checkpoint = null, currentLine, emp_code = null, exp_type = null, exp_code = null, val = null;
+        boolean hasEmpCode = false, hasExpType = false, hasExpCode = false, hasVal = false, hasType = false;
+        try {
+            fr = new FileReader(empTrnPath);
+            br = new BufferedReader(fr);
+        } catch (Exception ioe) {
+            System.out.println("!!!PROBLEM ON EMPLOYEE_EXPENSES READING!!!");
+        }
+
+        try {
+            while (true) {
+                assert br != null;
+                if ((currentLine = br.readLine()) == null) break;
+                skipEmptyLines(currentLine, br);
+                if (currentLine.trim().equalsIgnoreCase("TRN_LIST")) {
+                    currentLine = br.readLine();
+                    skipEmptyLines(currentLine, br);
+                    if (currentLine.trim().equals("{")) {
+                        while (!currentLine.trim().equals("}")) {
+                            currentLine = br.readLine();
+                            skipEmptyLines(currentLine, br);
+                            if (currentLine.trim().equalsIgnoreCase("TRN")) {
+                                currentLine = br.readLine();
+                                skipEmptyLines(currentLine, br);
+                                if (currentLine.equals("{")) {
+                                    while (!currentLine.equals("}")) {
+                                        checkpoint = currentLine = br.readLine();
+                                        if (currentLine.matches("(?i)\\s*employee_code\\s*(\\S+\\s*)*")) {
+                                            hasEmpCode = true;
+                                            emp_code = currentLine.trim().substring("EMPLOYEE_CODE".length()).trim();
+                                        } else if (currentLine.matches("(?i)\\s*expense_type\\s*(\\S+\\s*)*")) {
+                                            hasExpType = true;
+                                            exp_type = currentLine.trim().substring("EXPENSE_TYPE".length()).trim();
+                                        } else if (currentLine.matches("(?i)\\s*expense_code\\s*(\\S+\\s*)*")) {
+                                            hasExpCode = true;
+                                            exp_code = currentLine.trim().substring("EXPENSE_CODE".length()).trim();
+                                        } else if (currentLine.matches("(?i)\\s*val\\s*(\\S+\\s*)*")) {
+                                            hasVal = true;
+                                            val = currentLine.trim().substring("VAL".length()).trim();
+                                        } else if (currentLine.matches("(?i)\\s*type\\s*(\\S+\\s*)*")) {
+                                            hasType = true;
+                                            type = currentLine.trim().substring("TYPE".length()).trim();
+                                        }
+                                    }
+                                }
+                                if (hasEmpCode && hasExpCode && hasVal && hasType) {
+                                    if (!hasExpType) {
+                                        for (ExpenseType e : expenseTypes) {
+                                            if (e.getId().equalsIgnoreCase(exp_code)) {
+                                                exp_type = e.getType();
+                                                hasExpType = true;
+                                            }
+                                        }
+                                    }
+
+                                    for (String s : greekTrnTypes.keySet()) {
+                                        if (type.equalsIgnoreCase(s)) {
+                                            type = greekTrnTypes.get(s);
+                                            break;
+                                        }
+                                    }
+
+                                    Employee emp = searchForEmployee(emp_code);
+                                    ExpenseType exp = searchForExpenseType(exp_type, exp_code);
+                                    double value = Double.parseDouble(val);
+                                    Transaction toAdd = switch (type) {
+                                        case "CLEARING" -> new ClearingTransaction(emp, value, exp);
+                                        case "FINAL_CLEARING" -> new ClearingTransaction(emp, value);
+                                        case "DIFFERENCE" -> new Transaction(emp, value);
+                                        case "PREPAYMENT" -> new PrePaymentTransaction(emp, value);
+                                        default -> null;
+                                    };
+
+                                    et.put(emp, toAdd);
+                                } else {
+                                    System.out.println("File in line: ' " + checkpoint + " ' was skipped during loading due to insufficient data...");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("!!!ERROR DURING EMPLOYEE_TRANSACTIONS LOADING!!!");
+            et = null;
+        }
+
         return et;
     }
 
@@ -350,8 +447,7 @@ public class LoadExport {
         while (currentLine.trim().isEmpty()) {
             try {
                 currentLine = br.readLine(); //skip blank lines
-            } catch (IOException e) {
-                continue;
+            } catch (IOException ignored) {
             }
         }
     }
